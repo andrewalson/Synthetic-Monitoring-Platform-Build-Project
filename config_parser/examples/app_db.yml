@@ -1,0 +1,28 @@
+# Database configuration
+database:
+  host: localhost
+  port: 5432
+  name: myapp_db
+  user: admin
+  password: securepassword123
+
+# Application settings
+app_name: My Awesome App
+debug_mode: true
+max_connections: 100
+
+# User list
+users:
+  - alice
+  - bob
+  - charlie
+
+# Logging configuration
+logging:
+  level: INFO
+  file: /var/log/myapp.log
+
+# Feature flags
+features:
+  enable_caching: true
+  use_new_algorithm: false
