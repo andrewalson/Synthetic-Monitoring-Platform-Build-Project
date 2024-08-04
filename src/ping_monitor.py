@@ -54,9 +54,9 @@ def display_ping_results(results):
 
 def main():
     # User prompts for independent usage
-    target = input("Enter target IP address or hostname to ping: ")
-    count = int(input("Enter the number of pings to send: "))
-    interval = float(input("Enter interval in seconds between pings: "))
+    target = input("Enter target IP address or hostname: ")
+    count = int(input("Enter the number of probes: "))
+    interval = float(input("Enter interval in seconds between probes: "))
 
     # Main operation
     try:

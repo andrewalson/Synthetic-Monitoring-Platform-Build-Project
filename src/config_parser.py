@@ -2,7 +2,7 @@ import yaml
 import sys
 
 
-config_path = 'examples/app_db.yml'
+config_path = '../examples/app_db.yml'
 
 
 # Function reads & parses the YAML configuration file

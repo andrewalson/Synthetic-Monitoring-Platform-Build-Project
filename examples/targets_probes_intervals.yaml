@@ -1,0 +1,8 @@
+global_settings:
+  probes: 5
+  interval: 2
+
+targets:
+  - address: google.com
+  - address: example.com
+  - address: 8.8.8.8
