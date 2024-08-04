@@ -1,58 +1,82 @@
 import yaml
 import sys
 
-# Define the path to the YAML configuration file
-config_path = 'examples/config.yaml'
+
+config_path = 'examples/app_db.yml'
 
 
-# Define a function to read and parse the YAML configuration file
+# Function reads & parses the YAML configuration file
 def initial_yaml_read(file_path):
     try:
         with open(file_path, 'r') as file:
-            # Parse the YAML content and return it as a Python object
-            return yaml.safe_load(file)
+            return yaml.safe_load(file)  # Return parsed YAML content as a Python object
     except yaml.YAMLError as e:
         raise yaml.YAMLError(f'Invalid YAML syntax: {e}')
     except FileNotFoundError:
         raise FileNotFoundError(f'YAML file not found: {file_path}')
 
 
+def detect_config_type(config):
+    type_indicators = {
+        'Application': ['app', 'name', 'version'],
+        'Server': ['server', 'host', 'port'],
+        'Database': ['database', 'host', 'name'],
+        'Logging': ['logging', 'level', 'file'],
+        'Cache': ['cache', 'type', 'host'],
+        'API': ['api', 'version', 'rate_limit'],
+        'Security': ['security', 'secret_key', 'allowed_hosts'],
+        'Email': ['email', 'smtp_server', 'username'],
+        'Feature Flags': ['features'],
+        'External Services': ['services']
+    }
+
+    detected_types = []
+
+    # Check for each type
+    for config_type, indicators in type_indicators.items():
+        if any(indicator in config for indicator in indicators):
+            detected_types.append(config_type)
+
+    return detected_types if detected_types else ['Unknown']
+
+
 # Press the green button in the gutter to run the script.
 if __name__ == "__main__":
     try:
-        # Attempt to load the configuration by calling the function
-        config = initial_yaml_read(config_path)
+        config = initial_yaml_read(config_path) # Load config file
 
-        # Access the 'host' key nested under the 'database' key in the config
-        database_host = config['database']['host']
-        # Print the database host
-        print(f"Database host: {database_host}")
+        # Detect the configuration type(s)
+        config_types = detect_config_type(config)
 
-        # Iterate over the 'users' list in the config
-        for user in config['users']:
-            # Print each user
-            print(f"User: {user}")
+        print("Detected configuration type(s):")
+        for config_type in config_types:
+            print(f"- {config_type}")
 
-        # Add more configuration usage as needed
-        print("Full configuration:", config) #remove
+        print("\nTop-level keys::")
+        for key in list(config.keys())[:3]:
+            print(f"{key}: {config[key]}")
+
+        # # Iterate over the 'users' list in the config
+        # for user in config['users']:
+        #     # Print each user
+        #     print(f"User: {user}")
+
+        print("Full configuration:", config)  # ?
 
     except FileNotFoundError as e:
-        # Handle the case where the config file is not found
         print(f"Error: {e}")
         print("Error locating file, verify correct path.")
         sys.exit(1)
 
     except yaml.YAMLError as e:
-        # Handle YAML syntax errors
         print(f"Error: {e}")
-        print("Please check your YAML file for syntax errors.")
-        sys.exit(1) # Exit the script with an error code
-
-    except KeyError as e:
-        # Handle missing keys in the configuration
-        print(f"Error: Missing expected configuration key: {e}")
-        print("Please ensure all required keys are present in the config file.")
+        print("Syntax error, verify YAML.")
         sys.exit(1)
+
+    # except KeyError as e:
+    #     print(f"Error: Missing expected configuration key: {e}")
+    #     print("Please ensure all required keys are present in the config file.")
+    #     sys.exit(1)
 
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
