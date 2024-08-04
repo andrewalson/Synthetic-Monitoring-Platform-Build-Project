@@ -1,16 +1,24 @@
-# This is a sample Python script.
-
 # Press ⌃R to execute it or replace it with your code.
 # Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
+import config_parser
+import ping_monitor
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press ⌘F8 to toggle the breakpoint.
+def main():
+    # Load configuration
+    config = config_parser.initial_yaml_read('./examples/targets.yaml')
+
+    # Check if 'targets' is in the configuration
+    if 'targets' not in config:
+        print("Error: 'targets' not found in configuration")
+        return
+
+    # Ping each target
+    for target in config['targets']:
+        print(f"\nPinging {target}...")
+        results = ping_monitor.ping_server(target)
+        ping_monitor.display_ping_results(results)
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+if __name__ == "__main__":
+    main()
