@@ -16,6 +16,7 @@ def initial_yaml_read(file_path):
         raise FileNotFoundError(f'YAML file not found: {file_path}')
 
 
+# Only used when file ran independently
 def detect_config_type(config):
     type_indicators = {
         'Application': ['app', 'name', 'version'],
@@ -40,8 +41,7 @@ def detect_config_type(config):
     return detected_types if detected_types else ['Unknown']
 
 
-# Press the green button in the gutter to run the script.
-if __name__ == "__main__":
+def main():
     try:
         config = initial_yaml_read(config_path) # Load config file
 
@@ -88,3 +88,7 @@ if __name__ == "__main__":
     finally:
         # Executes at end regardless of whether an exception was raised
         print("Configuration processing complete")
+
+
+if __name__ == "__main__":
+    main()
