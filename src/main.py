@@ -1,5 +1,3 @@
-# Press ⌃R to execute it or replace it with your code.
-# Press Double ⇧ to search everywhere for classes, files, tool windows, actions, and settings.
 import config_parser
 import ping_monitor
 import sys
@@ -18,7 +16,7 @@ def main():
     if len(sys.argv) > 1:
         config_path = sys.argv[1]
     else:
-        config_path = './examples/targets_probes_intervals.yaml'
+        config_path = '../examples/targets_probes_intervals.yaml'
 
     # Check if the file exists
     if not os.path.exists(config_path):

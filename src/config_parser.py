@@ -2,6 +2,7 @@ import yaml
 import sys
 
 
+# Define the default config path relative to this file
 config_path = '../examples/app_db.yml'
 
 
