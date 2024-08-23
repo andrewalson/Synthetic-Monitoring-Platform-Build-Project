@@ -32,13 +32,13 @@ def run_ping_monitor(config_path):
 
     while True:
         for target in config['targets']:
-            print(f"\nPinging {target['address']}...")
+            print(f"\nPinging {target}...")
             results = ping_monitor.ping_server(
-                target['address'],
+                target,
                 count=probes,
                 interval=interval
             )
-            ping_monitor.display_and_expose_results(results, target['address'])
+            ping_monitor.display_and_expose_results(results, target)
 
         # Wait before the next round of pings
         time.sleep(60)  # Wait for 60 seconds before the next round
