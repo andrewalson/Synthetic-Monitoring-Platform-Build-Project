@@ -3,8 +3,14 @@ import json
 from prometheus_client import Gauge
 
 # Define Prometheus metrics
-round_trip_time = Gauge('round_trip_time',
-                        'Ping latency in milliseconds',
+round_trip_time_average = Gauge('round_trip_time_average',
+                        'Average ping latency in milliseconds',
+                        ['target'])
+round_trip_time_best = Gauge('round_trip_time_best',
+                        'Fastest ping latency in milliseconds',
+                        ['target'])
+round_trip_time_worst = Gauge('round_trip_time_worst',
+                        'Slowest ping latency in milliseconds',
                         ['target'])
 packet_loss_rate = Gauge('packet_loss_rate',
                          'Packet loss rate percentage',
@@ -37,11 +43,14 @@ def display_and_expose_results(ping_result, target):
         print(f"Packets Transmitted: {parsed_result.packet_transmit}")
         print(f"Packets Received: {parsed_result.packet_receive}")
         print(f"Packet Loss Rate: {parsed_result.packet_loss_rate}%")
-        print(f"Round Trip Time (ms):")
-        print(f"  Average: {parsed_result.rtt_avg}")
+        print(f"Average Round Trip Time: {parsed_result.rtt_avg} ms")
+        print(f"Local Best Round Trip Time: {parsed_result.rtt_min} ms")
+        print(f"Local Worst Round Trip Time: {parsed_result.rtt_max} ms")
 
         # Update Prometheus metrics
-        round_trip_time.labels(target=target).set(parsed_result.rtt_avg)
+        round_trip_time_average.labels(target=target).set(parsed_result.rtt_avg)
+        round_trip_time_best.labels(target=target).set(parsed_result.rtt_min)
+        round_trip_time_worst.labels(target=target).set(parsed_result.rtt_max)
         packet_loss_rate.labels(target=target).set(parsed_result.packet_loss_rate)
 
     except Exception as e:
