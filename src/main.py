@@ -53,7 +53,7 @@ def main():
     if len(sys.argv) > 1:
         config_path = sys.argv[1]
     else:
-        config_path = '../examples/targets_probes_intervals.yaml'
+        config_path = '../examples/variety.yml'
 
     print(f"Using config file: {config_path}")
 
