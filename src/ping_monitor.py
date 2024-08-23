@@ -1,26 +1,23 @@
 import pingparsing
 import json
+from prometheus_client import Gauge
 
+# Define Prometheus metrics
+round_trip_time = Gauge('round_trip_time',
+                        'Ping latency in milliseconds',
+                        ['target'])
+packet_loss_rate = Gauge('packet_loss_rate',
+                         'Packet loss rate percentage',
+                         ['target'])
 
-# Ping server function
-# Accepts target address, number of probes default 4, interval in seconds default 1
 def ping_server(target, count=4, interval=1):
-
-    # Initialize Transmitter instance from the library
     transmitter = pingparsing.PingTransmitter()
     transmitter.destination = target
     transmitter.count = count
-    transmitter.ping_option = f"-i {interval}" # Between pings
-
-    # print("Raw result type:", type(transmitter.ping()))
-    # print("Raw result:")
-    # print(transmitter.ping())
-
-    # Returns PingResult object from Pingparsing library
+    transmitter.ping_option = f"-i {interval}"
     return transmitter.ping()
 
-
-def display_ping_results(ping_result):
+def display_and_expose_results(ping_result, target):
     if not ping_result:
         print("No ping results, check request validity.")
         return
@@ -41,27 +38,27 @@ def display_ping_results(ping_result):
         print(f"Packets Received: {parsed_result.packet_receive}")
         print(f"Packet Loss Rate: {parsed_result.packet_loss_rate}%")
         print(f"Round Trip Time (ms):")
-        print(f"  Minimum: {parsed_result.rtt_min}")
         print(f"  Average: {parsed_result.rtt_avg}")
-        print(f"  Maximum: {parsed_result.rtt_max}")
+
+        # Update Prometheus metrics
+        round_trip_time.labels(target=target).set(parsed_result.rtt_avg)
+        packet_loss_rate.labels(target=target).set(parsed_result.packet_loss_rate)
+
     except Exception as e:
         print(f"Error processing result: {e}")
         print("Raw stdout:")
         print(ping_result.stdout)
 
 def main():
-    # User prompts for independent usage
     target = input("Enter target IP address or hostname: ")
     count = int(input("Enter the number of probes: "))
     interval = float(input("Enter interval in seconds between probes: "))
 
-    # Main operation
     try:
         results = ping_server(target, count, interval)
-        display_ping_results(results)
+        display_and_expose_results(results, target)
     except Exception as e:
         print(f"Error: {e}")
-
 
 if __name__ == "__main__":
     main()
