@@ -1,0 +1,9 @@
+global_settings:
+  probes: 5
+  interval: 2
+
+targets:
+  - example.com
+  - 208.67.222.222  # OpenDNS public DNS server
+  - e9428.b.akamaiedge.net  # Example edge server (Akamai)
+  - 192.168.1.1  # Example private IP (typical home router address)
