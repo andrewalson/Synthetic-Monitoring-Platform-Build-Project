@@ -2,6 +2,8 @@ import config_parser
 import ping_monitor
 import sys
 import os
+from prometheus_client import start_http_server
+import time
 
 
 def get_user_input(prompt, default=None):
@@ -9,51 +11,60 @@ def get_user_input(prompt, default=None):
     return value if value else default
 
 
-def main():
-    # Load configuration
-    # Check for config file path is provided via command-line argument, else use hardcoded
-    # Ex. 'python3 src/main.py examples/targets_probes_intervals.yaml' *python3*
-    if len(sys.argv) > 1:
-        config_path = sys.argv[1]
-    else:
-        config_path = '../examples/targets_probes_intervals.yaml'
-
-    # Check if the file exists
+def run_ping_monitor(config_path):
     if not os.path.exists(config_path):
         print(f"Error: Config file '{config_path}' not found.")
         return
 
-    # Load (confirmed) existing configuration
     try:
         config = config_parser.initial_yaml_read(config_path)
     except Exception as e:
         print(f"Error loading config file: {e}")
         return
 
-    # Check if 'targets' is in the configuration
     if 'targets' not in config:
         print("Error: 'targets' not found in configuration")
         return
 
-    # Get global settings or prompt user
     global_settings = config.get('global_settings', {})
-    probes = global_settings.get('probes')
-    if probes is None:
-        probes = int(get_user_input("Enter number of probes", "4"))
+    probes = global_settings.get('probes', 4)
+    interval = global_settings.get('interval', 1)
 
-    interval = global_settings.get('interval')
-    if interval is None:
-        interval = float(get_user_input("Enter interval between probes (in seconds)", "1"))
+    while True:
+        for target in config['targets']:
+            print(f"\nPinging {target['address']}...")
+            results = ping_monitor.ping_server(
+                target['address'],
+                count=probes,
+                interval=interval
+            )
+            ping_monitor.display_and_expose_results(results, target['address'])
 
-    # Ping each target
-    for target in config['targets']:
-        print(f"\nPinging {target['address']}...")
-        results = ping_monitor.ping_server(
-            target['address'],
-            count=probes,
-            interval=interval
-        )
-        ping_monitor.display_ping_results(results)
+        # Wait before the next round of pings
+        time.sleep(60)  # Wait for 60 seconds before the next round
+
+
+def main():
+    # Start Prometheus HTTP server
+    start_http_server(8989)
+    print("Prometheus metrics server started on port 8989")
+
+    # Get config file path
+    if len(sys.argv) > 1:
+        config_path = sys.argv[1]
+    else:
+        config_path = '../examples/targets_probes_intervals.yaml'
+
+    print(f"Using config file: {config_path}")
+
+    try:
+        run_ping_monitor(config_path)
+    except KeyboardInterrupt:
+        print("\nPing monitor stopped by user.")
+    except Exception as e:
+        print(f"An error occurred: {e}")
+    finally:
+        print("Ping monitor shutting down.")
 
 
 if __name__ == "__main__":
