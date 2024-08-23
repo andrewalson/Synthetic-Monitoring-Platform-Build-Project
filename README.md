@@ -2,7 +2,11 @@
 
 <p align="center"> With a projected compound annual growth rate of 15.3% from 2023 to 2028, synthetic monitoring is a rapidly growing global industry. That figure reflects an age where incidents such as the July 2024 worldwide outage of Windows systems caused by a faulty and recklessly-released CrowdStrike sensor configuration update can cause billions in uninsured damages. As such, in our world today, active monitoring is a high-stakes discipline of difficult-to-understate importance. Over this 8-week "Build Project" associated with the Open Avenues Build Fellowship and led by Build Fellow Sonu Gupta, I developed a synthetic monitoring platform that can monitor the performance of an application or system by pinging servers for time-series data and relaying them through Prometheus to a Grafana dashboard for visualization.</p>
 
-## System Components:
+<p align="center">
+<img width="917" alt="Screenshot 2024-08-23 at 7 32 12 PM" src="https://github.com/user-attachments/assets/68be96cb-f5c3-4023-a848-9ad0f8b2e683">
+</p>
+
+## <p align="center"> System Components: </p>
 ### YAML Configuration File Parser
 - Python module which reads & parses YAML configuration files to return as a Python dictionary.
 - Detects top-level keys & common configuration types based on YAML structure when ran independently.
@@ -25,7 +29,7 @@
 - Prometheus: Open source monitoring system & alerting tool configured to scrape metrics from the ping monitor.
 - Grafana: Open source observability platform & visualization tool with configured time-series data dashboards.
 
-## Getting Started
+## <p align="center"> Getting Started </p>
 _Pre-requisites: Prometheus & Grafana binaries, Python 3.8+_
 - Clone the repository
 - Add HTTP server port to Prometheus config
@@ -40,4 +44,15 @@ _Pre-requisites: Prometheus & Grafana binaries, Python 3.8+_
   pip install -r requirements.txt
   cd src/
   python main.py example.yml
+```
+- **If providing custom YAML file (not default provided targets_probes_intervals.yaml), format as:**
+```
+global_settings:
+  probes: 4
+  interval: 1
+
+targets:
+  - 8.8.8.8
+  - example.com
+  - another.target.io
 ```
