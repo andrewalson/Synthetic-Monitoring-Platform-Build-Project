@@ -53,14 +53,9 @@ def main():
         for config_type in config_types:
             print(f"- {config_type}")
 
-        print("\nTop-level keys::")
+        print("\nTop-level keys:")
         for key in list(config.keys())[:3]:
             print(f"{key}: {config[key]}")
-
-        # # Iterate over the 'users' list in the config
-        # for user in config['users']:
-        #     # Print each user
-        #     print(f"User: {user}")
 
         print("Full configuration:", config)  # ?
 
@@ -73,11 +68,6 @@ def main():
         print(f"Error: {e}")
         print("Syntax error, verify YAML.")
         sys.exit(1)
-
-    # except KeyError as e:
-    #     print(f"Error: Missing expected configuration key: {e}")
-    #     print("Please ensure all required keys are present in the config file.")
-    #     sys.exit(1)
 
     except Exception as e:
         print(f"An unexpected error occurred: {e}")
