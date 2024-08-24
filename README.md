@@ -29,6 +29,11 @@
 - Prometheus: Open source monitoring system & alerting tool configured to scrape metrics from the ping monitor.
 - Grafana: Open source observability platform & visualization tool with configured time-series data dashboards.
 
+## <p align="center"> Example Dashboard Panels: </p>
+<p align="center">
+<img width="930" alt="Screenshot 2024-08-23 at 10 32 17 PM" src="https://github.com/user-attachments/assets/cc7df356-f226-4503-8b8c-07db4d734ba1">
+</p>
+
 ## <p align="center"> Getting Started </p>
 _Pre-requisites: Prometheus & Grafana binaries, Python 3.8+_
 - Clone the repository
