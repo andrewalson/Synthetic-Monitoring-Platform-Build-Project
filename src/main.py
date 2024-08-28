@@ -22,13 +22,14 @@ def run_ping_monitor(config_path):
         print(f"Error loading config file: {e}")
         return
 
-    if 'targets' not in config:
-        print("Error: 'targets' not found in configuration")
-        return
-
     global_settings = config.get('global_settings', {})
     probes = global_settings.get('probes', 4)
     interval = global_settings.get('interval', 1)
+    port = global_settings.get('port', 8989)
+
+    # Start Prometheus HTTP server
+    start_http_server(port)
+    print(f"Prometheus metrics server started on port {port}")
 
     while True:
         for target in config['targets']:
@@ -45,10 +46,6 @@ def run_ping_monitor(config_path):
 
 
 def main():
-    # Start Prometheus HTTP server
-    start_http_server(8989)
-    print("Prometheus metrics server started on port 8989")
-
     # Get config file path
     if len(sys.argv) > 1:
         config_path = sys.argv[1]

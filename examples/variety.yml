@@ -1,6 +1,7 @@
 global_settings:
   probes: 5
   interval: 2
+  port: 8989
 
 targets:
   - example.com
