@@ -10,14 +10,23 @@ config_path = '../examples/app_db.yml'
 def initial_yaml_read(file_path):
     try:
         with open(file_path, 'r') as file:
-            return yaml.safe_load(file)  # Return parsed YAML content as a Python object
+            config = yaml.safe_load(file)  # Return parsed YAML content as a Python object
+
+        if 'global_settings' not in config:
+            config['global_settings'] = {}
+        if 'port' not in config['global_settings']:
+            config['global_settings']['port'] = 8989  # Default port if not specified
+        if 'targets' not in config:
+            raise KeyError("Missing 'targets' in configuration")
+
+        return config
     except yaml.YAMLError as e:
         raise yaml.YAMLError(f'Invalid YAML syntax: {e}')
     except FileNotFoundError:
         raise FileNotFoundError(f'YAML file not found: {file_path}')
 
 
-# Only used when file ran independently
+# Only used when module ran independently
 def detect_config_type(config):
     type_indicators = {
         'Application': ['app', 'name', 'version'],
@@ -58,6 +67,10 @@ def main():
             print(f"{key}: {config[key]}")
 
         print("Full configuration:", config)  # ?
+
+        # Print the port configuration
+        port = config['global_settings']['port']
+        print(f"\nConfigured port: {port}")
 
     except FileNotFoundError as e:
         print(f"Error: {e}")
