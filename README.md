@@ -50,11 +50,12 @@ _Pre-requisites: Prometheus & Grafana binaries, Python 3.8+_
   cd src/
   python main.py example.yml
 ```
-- **If providing custom YAML file (not default provided targets_probes_intervals.yaml), format as:**
+- **If providing custom YAML file (not default provided variety.yaml), format as:**
 ```
 global_settings:
   probes: 4
   interval: 1
+  port: 8989
 
 targets:
   - 8.8.8.8
