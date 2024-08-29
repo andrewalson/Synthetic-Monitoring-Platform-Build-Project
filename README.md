@@ -3,7 +3,7 @@
 <p align="center"> With a projected compound annual growth rate of 15.3% from 2023 to 2028, synthetic monitoring is a rapidly growing global industry. That figure reflects an age where incidents such as the July 2024 worldwide outage of Windows systems caused by a faulty and recklessly-released CrowdStrike sensor configuration update can cause billions in uninsured damages. As such, in our world today, active monitoring is a high-stakes discipline of difficult-to-understate importance. Over this 8-week "Build Project" associated with the Open Avenues Build Fellowship and led by Build Fellow Sonu Gupta, I developed a synthetic monitoring platform that can monitor the performance of an application or system by pinging servers for time-series data and relaying them through Prometheus to a Grafana dashboard for visualization.</p>
 
 <p align="center">
-<img width="917" alt="Screenshot 2024-08-23 at 7 32 12 PM" src="https://github.com/user-attachments/assets/68be96cb-f5c3-4023-a848-9ad0f8b2e683">
+<img alt="Screenshot 2024-08-23 at 7 32 12 PM" src="https://github.com/user-attachments/assets/68be96cb-f5c3-4023-a848-9ad0f8b2e683">
 </p>
 
 ## <p align="center"> System Components: </p>
@@ -31,7 +31,8 @@
 
 ## <p align="center"> Example Dashboard Panels: </p>
 <p align="center">
-<img width="930" alt="Screenshot 2024-08-23 at 10 32 17 PM" src="https://github.com/user-attachments/assets/cc7df356-f226-4503-8b8c-07db4d734ba1">
+<img alt="Example Dashboard" src="https://github.com/user-attachments/assets/e7034551-6391-4449-bf35-7c5721fb58f5">
+
 </p>
 
 ## <p align="center"> Getting Started </p>
