@@ -2,10 +2,6 @@ import yaml
 import sys
 
 
-# Define the default config path relative to this file
-config_path = '../examples/app_db.yml'
-
-
 # Function reads & parses the YAML configuration file
 def initial_yaml_read(file_path):
     try:
@@ -52,6 +48,14 @@ def detect_config_type(config):
 
 
 def main():
+    # Get config file path
+    if len(sys.argv) > 1:
+        config_path = sys.argv[1]
+    else:
+        config_path = '../configs/app_db.yml'
+
+    print(f"Using config file: {config_path}")
+
     try:
         config = initial_yaml_read(config_path) # Load config file
 
