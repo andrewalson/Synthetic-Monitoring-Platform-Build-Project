@@ -48,8 +48,8 @@ def run_ping_monitor(config_path, output_queue=None):
                 count=probes,
                 interval=interval
             )
-            ping_monitor.display_and_expose_results(results, target)
-            output(str(results), output_queue)
+            formatted_results = ping_monitor.display_and_expose_results(results, target)
+            output(formatted_results, output_queue)
 
         # Wait before the next round of pings
         time.sleep(60)  # Wait for 60 seconds before the next round
