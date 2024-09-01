@@ -18,11 +18,11 @@
         name="config_path"
         placeholder="{{ default_config_path }}"
       />
-      <button type="submit">Set Config</button>
+      <button type="submit">Run Monitor on Config</button>
     </form>
     {% if message %}
     <p>{{ message }}</p>
     {% endif %}
-    <a href="{{ url_for('output') }}">View Raw Monitor Output</a>
+    <a href="{{ url_for('output') }}">View Monitor Output Stream</a>
   </body>
 </html>
