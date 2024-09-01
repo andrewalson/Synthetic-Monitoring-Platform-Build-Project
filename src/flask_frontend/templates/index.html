@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <title>Connectivity Monitor Frontend</title>
+  </head>
+  <body>
+    <h1>Input Panel</h1>
+    <form action="{{ url_for('set_config') }}" method="post">
+      <label for="config_path">Config Path (Absolute):</label>
+      <input
+        type="text"
+        id="config_path"
+        name="config_path"
+        placeholder="{{ default_config_path }}"
+      />
+      <button type="submit">Run Monitor on Config</button>
+    </form>
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
+    <a href="{{ url_for('output') }}">View Monitor Output Stream</a>
+  </body>
+</html>

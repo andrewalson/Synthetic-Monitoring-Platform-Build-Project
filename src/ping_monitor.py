@@ -24,28 +24,29 @@ def ping_server(target, count=4, interval=1):
     return transmitter.ping()
 
 def display_and_expose_results(ping_result, target):
+    output = []
     if not ping_result:
-        print("No ping results, check request validity.")
-        return
+        output.append("No ping results, check request validity.")
+        return "\n".join(output)
 
     if ping_result.returncode != 0:
-        print(f"Ping failed with return code: {ping_result.returncode}")
-        print("Error output:")
-        print(ping_result.stderr)
-        return
+        output.append(f"Ping failed with return code: {ping_result.returncode}")
+        output.append("Error output:")
+        output.append(ping_result.stderr)
+        return "\n".join(output)
 
     ping_parser = pingparsing.PingParsing()
     try:
         parsed_result = ping_parser.parse(ping_result.stdout)
 
-        print("\nPing Results:")
-        print(f"Destination: {parsed_result.destination}")
-        print(f"Packets Transmitted: {parsed_result.packet_transmit}")
-        print(f"Packets Received: {parsed_result.packet_receive}")
-        print(f"Packet Loss Rate: {parsed_result.packet_loss_rate}%")
-        print(f"Average Round Trip Time: {parsed_result.rtt_avg} ms")
-        print(f"Local Best Round Trip Time: {parsed_result.rtt_min} ms")
-        print(f"Local Worst Round Trip Time: {parsed_result.rtt_max} ms")
+        output.append("\nPing Results:")
+        output.append(f"Destination: {parsed_result.destination}")
+        output.append(f"Packets Transmitted: {parsed_result.packet_transmit}")
+        output.append(f"Packets Received: {parsed_result.packet_receive}")
+        output.append(f"Packet Loss Rate: {parsed_result.packet_loss_rate}%")
+        output.append(f"Average Round Trip Time: {parsed_result.rtt_avg} ms")
+        output.append(f"Local Best Round Trip Time: {parsed_result.rtt_min} ms")
+        output.append(f"Local Worst Round Trip Time: {parsed_result.rtt_max} ms")
 
         # Update Prometheus metrics
         round_trip_time_average.labels(target=target).set(parsed_result.rtt_avg)
@@ -54,9 +55,11 @@ def display_and_expose_results(ping_result, target):
         packet_loss_rate.labels(target=target).set(parsed_result.packet_loss_rate)
 
     except Exception as e:
-        print(f"Error processing result: {e}")
-        print("Raw stdout:")
-        print(ping_result.stdout)
+        output.append(f"Error processing result: {e}")
+        output.append("Raw stdout:")
+        output.append(ping_result.stdout)
+
+    return "\n".join(output)
 
 def main():
     target = input("Enter target IP address or hostname: ")

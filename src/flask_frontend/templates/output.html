@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content="5" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+    <title>Monitor Output</title>
+  </head>
+  <body>
+    <h1>Monitor Output</h1>
+    <div id="output-container">
+      {% for message in messages %} {{ message }} {% endfor %}
+    </div>
+    <a href="{{ url_for('index') }}">Back to Input Panel</a>
+    <script>
+      // Scroll to the bottom of the output container
+      var outputContainer = document.getElementById("output-container");
+      outputContainer.scrollTop = outputContainer.scrollHeight;
+    </script>
+  </body>
+</html>
