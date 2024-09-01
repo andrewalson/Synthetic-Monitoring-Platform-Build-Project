@@ -10,5 +10,19 @@
   </head>
   <body>
     <h1>Input Panel</h1>
+    <form action="{{ url_for('set_config') }}" method="post">
+      <label for="config_path">Config Path (Absolute):</label>
+      <input
+        type="text"
+        id="config_path"
+        name="config_path"
+        placeholder="{{ default_config_path }}"
+      />
+      <button type="submit">Set Config</button>
+    </form>
+    {% if message %}
+    <p>{{ message }}</p>
+    {% endif %}
+    <a href="{{ url_for('output') }}">View Raw Monitor Output</a>
   </body>
 </html>

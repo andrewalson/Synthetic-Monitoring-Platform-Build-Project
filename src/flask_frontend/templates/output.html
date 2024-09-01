@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="refresh" content="5" />
+    <title>Monitor Output</title>
+  </head>
+  <body>
+    <h1>Monitor Output</h1>
+    <pre>
+{% for message in messages %}
+{{ message }}
+{% endfor %}
+    </pre>
+    <a href="{{ url_for('index') }}">Back to Input Panel</a>
+  </body>
+</html>
