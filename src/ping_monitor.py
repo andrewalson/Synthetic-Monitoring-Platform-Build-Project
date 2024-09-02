@@ -12,9 +12,15 @@ round_trip_time_best = Gauge('round_trip_time_best',
 round_trip_time_worst = Gauge('round_trip_time_worst',
                         'Slowest ping latency in milliseconds',
                         ['target'])
+round_trip_time_mean_deviation = Gauge('round_trip_time_mean_standard_deviation',
+                                    'Mean deviation of ping latency in milliseconds',
+                                    ['target'])
 packet_loss_rate = Gauge('packet_loss_rate',
                          'Packet loss rate percentage',
                          ['target'])
+packet_duplicate_rate = Gauge('packet_duplicate_rate',
+                              'Packet duplicate rate percentage',
+                              ['target'])
 
 def ping_server(target, count=5, interval=1):
     '''
@@ -50,21 +56,27 @@ def display_and_expose_results(ping_result, target):
 
     ping_parser = pingparsing.PingParsing()
     try:
+        # Parse from JSON into Python object
         parsed_result = ping_parser.parse(ping_result.stdout)
 
-        output.append("\nPing Results:")
+        output.append("\nPing Batch Results:")
         output.append(f"Destination: {parsed_result.destination}")
         output.append(f"Packets Transmitted: {parsed_result.packet_transmit}")
         output.append(f"Packets Received: {parsed_result.packet_receive}")
         output.append(f"Packet Loss Rate: {parsed_result.packet_loss_rate}%")
+        output.append(f"Packet Duplicate Rate: {parsed_result.packet_duplicate_rate}%")
         output.append(f"Average Round Trip Time: {parsed_result.rtt_avg} ms")
         output.append(f"Local Best Round Trip Time: {parsed_result.rtt_min} ms")
         output.append(f"Local Worst Round Trip Time: {parsed_result.rtt_max} ms")
+        output.append(f"Batch Mean Deviation: {parsed_result.rtt_mdev} ms")
 
+        # Update Prometheus metrics
         round_trip_time_average.labels(target=target).set(parsed_result.rtt_avg)
         round_trip_time_best.labels(target=target).set(parsed_result.rtt_min)
         round_trip_time_worst.labels(target=target).set(parsed_result.rtt_max)
         packet_loss_rate.labels(target=target).set(parsed_result.packet_loss_rate)
+        packet_duplicate_rate.labels(target=target).set(parsed_result.packet_duplicate_rate)
+        round_trip_time_mean_deviation.labels(target=target).set(parsed_result.rtt_mdev)
 
     except Exception as e:
         output.append(f"Error processing result: {e}")
