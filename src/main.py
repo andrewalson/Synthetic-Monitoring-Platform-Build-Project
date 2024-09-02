@@ -11,6 +11,15 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_CONFIG_PATH = os.path.join(BASE_DIR, 'configs', 'variety.yml')
 
 def run_ping_monitor(config_path, output_queue=None):
+    '''
+    This function reads the configuration file, starts the Prometheus HTTP server,
+    and continuously pings the specified targets, updating metrics & outputting results.
+
+    Args:
+        config_path (str): The path to the YAML configuration file.
+        output_queue (queue.Queue, optional): Output messages queue for frontend. 
+                                            If None, output is printed to console.
+    '''
     if not os.path.exists(config_path):
         message = f"Error: Config file '{config_path}' not found."
         output(message, output_queue)
@@ -44,24 +53,43 @@ def run_ping_monitor(config_path, output_queue=None):
             formatted_results = ping_monitor.display_and_expose_results(results, target)
             output(formatted_results, output_queue)
 
-        # Wait before the next round of pings
+        # Wait 15 seconds before the next round of pings
         print("Batch complete. Starting new batch in 15 seconds...")
         time.sleep(15)
 
 def output(message, queue=None):
+    '''
+    Output a message either to a queue or to the console.
+
+    Args:
+        message (str): The message to output.
+        queue (queue.Queue, optional): If provided, the message is put into this queue.
+                                       If None, the message is printed to the console.
+    '''
     if queue:
         queue.put(message)
     else:
         print(message)
 
 def start_monitor_thread(config_path, output_queue):
+    '''
+    *** For now, only used when ran from frontend entry point ***
+    
+    This function creates and starts a new daemon thread that runs the ping monitor
+    with the specified configuration.
+
+    Args:
+        config_path (str): The path to the YAML configuration file.
+        output_queue (queue.Queue): A queue to store output messages from the monitor.
+    Returns:
+        threading.Thread: The started thread object.
+    '''
     thread = threading.Thread(target=run_ping_monitor, args=(config_path, output_queue))
     thread.daemon = True
     thread.start()
     return thread
 
 def main():
-    # Get config file path
     if len(sys.argv) > 1:
         config_path = sys.argv[1]
     else:

@@ -4,6 +4,12 @@ import sys
 
 # Function reads & parses the YAML configuration file
 def initial_yaml_read(file_path):
+    '''
+    This function reads the specified YAML file, parses its contents, and returns
+    the configuration as a Python dictionary. It also sets default values for
+    certain configuration parameters if they are not present in the file. 
+    In the future this should be expanded to handle more formats of YAML files.
+    '''
     try:
         with open(file_path, 'r') as file:
             config = yaml.safe_load(file)  # Return parsed YAML content as a Python object
@@ -21,9 +27,13 @@ def initial_yaml_read(file_path):
     except FileNotFoundError:
         raise FileNotFoundError(f'YAML file not found: {file_path}')
 
-
-# Only used when module ran independently
 def detect_config_type(config):
+    '''
+    This function analyzes the given configuration dictionary and attempts to
+    determine what kind of configuration it represents (e.g., Application, Server,
+    Database, etc.) based on the presence of certain key indicators.
+    *** Only used when module ran independently ***
+    '''
     type_indicators = {
         'Application': ['app', 'name', 'version'],
         'Server': ['server', 'host', 'port'],
@@ -48,7 +58,7 @@ def detect_config_type(config):
 
 
 def main():
-    # Get config file path
+    # Accepts config file path as argument, else defaults to app_db.yml
     if len(sys.argv) > 1:
         config_path = sys.argv[1]
     else:

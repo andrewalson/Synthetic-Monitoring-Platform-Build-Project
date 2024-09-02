@@ -16,7 +16,16 @@ packet_loss_rate = Gauge('packet_loss_rate',
                          'Packet loss rate percentage',
                          ['target'])
 
-def ping_server(target, count=4, interval=1):
+def ping_server(target, count=5, interval=1):
+    '''
+    This function uses the pingparsing library to send ICMP echo requests (pings)
+    to the specified target servers and return the results as PingResult object.
+
+    Args:
+        target (str): The IP address or hostname of the target server.
+        count (int, optional): The number of ping requests to send. Defaults to 4.
+        interval (int, optional): The interval between ping requests in seconds. Defaults to 1.
+    '''
     transmitter = pingparsing.PingTransmitter()
     transmitter.destination = target
     transmitter.count = count
@@ -24,6 +33,10 @@ def ping_server(target, count=4, interval=1):
     return transmitter.ping()
 
 def display_and_expose_results(ping_result, target):
+    '''
+    This function takes the raw ping results, parses them, displays them in a
+    human-readable format, and updates Prometheus metrics with the results.
+    '''
     output = []
     if not ping_result:
         output.append("No ping results, check request validity.")
@@ -48,7 +61,6 @@ def display_and_expose_results(ping_result, target):
         output.append(f"Local Best Round Trip Time: {parsed_result.rtt_min} ms")
         output.append(f"Local Worst Round Trip Time: {parsed_result.rtt_max} ms")
 
-        # Update Prometheus metrics
         round_trip_time_average.labels(target=target).set(parsed_result.rtt_avg)
         round_trip_time_best.labels(target=target).set(parsed_result.rtt_min)
         round_trip_time_worst.labels(target=target).set(parsed_result.rtt_max)

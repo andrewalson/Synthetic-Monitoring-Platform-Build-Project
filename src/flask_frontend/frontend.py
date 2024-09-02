@@ -19,6 +19,11 @@ def index():
 
 @app.route('/set_config', methods=['POST'])
 def set_config():
+    '''
+    Called when user submits config path via form on index page.
+    Starts or restarts the monitor thread with specified configuration.
+    Returns rendered HTML content of index page with status message.
+    '''
     global monitor_thread
     config_path = request.form['config_path']
     if not config_path:
@@ -27,7 +32,7 @@ def set_config():
     if os.path.exists(config_path):
         # Stop the existing monitor thread if it's running
         if monitor_thread:
-            # You might want to implement a proper shutdown mechanism
+            # TO-DO: proper shutdown mechanism
             pass
         
         # Start a new monitor thread
@@ -40,6 +45,9 @@ def set_config():
 
 @app.route('/output')
 def output():
+    '''
+    Retrieves messages from output queue & displays them on the output page.
+    '''
     messages = []
     while not output_queue.empty():
         messages.append(output_queue.get())
