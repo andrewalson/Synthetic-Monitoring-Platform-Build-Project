@@ -54,7 +54,7 @@ def run_ping_monitor(config_path, output_queue=None):
             output(formatted_results, output_queue)
 
         # Wait 15 seconds before the next round of pings
-        print("Batch complete. Starting new batch in 15 seconds...")
+        output("\nBatch complete. Starting new batch in 15 seconds...", output_queue)
         time.sleep(15)
 
 def output(message, queue=None):
@@ -74,7 +74,7 @@ def output(message, queue=None):
 def start_monitor_thread(config_path, output_queue):
     '''
     *** For now, only used when ran from frontend entry point ***
-    
+
     This function creates and starts a new daemon thread that runs the ping monitor
     with the specified configuration.
 
