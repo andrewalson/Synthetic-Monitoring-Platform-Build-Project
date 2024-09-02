@@ -6,6 +6,7 @@ from prometheus_client import start_http_server
 import time
 import threading
 import queue
+import re
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 DEFAULT_CONFIG_PATH = os.path.join(BASE_DIR, 'configs', 'variety.yml')
@@ -66,6 +67,9 @@ def output(message, queue=None):
         queue (queue.Queue, optional): If provided, the message is put into this queue.
                                        If None, the message is printed to the console.
     '''
+    # Remove the first line if it's blank
+    message = re.sub(r'^\s*\n', '', message)
+    
     if queue:
         queue.put(message)
     else:
