@@ -18,8 +18,10 @@
 
 - Python module which leverages **'pingparsing'** library to monitor network connectivity.
 - Takes targets, probes, and interval from user input, pings server(s) after given interval, parses results.
-- Initializes Prometheus metrics for each target server and each latency/packet loss metric returned.
+- Initializes Prometheus metrics for each target server and each latency/packet loss metric to expose.
+- - **Metrics Exposed to Prometheus:** Packet Transmit/Receive/Loss/Duplicate Count, Round Trip Time Average/Best/Worst/Mean deviation, Packet Loss Rate, Packet Duplicate Rate
 - Extracts & present key metrics on console with confirmation of updating Prometheus metrics.
+- - **Metrics Displayed to CLI/GUI:** All RTT metrics, Packet Loss Rate, Packet Duplicate Rate
 
 ### Integrated Modules @ main.py
 

@@ -21,6 +21,18 @@ packet_loss_rate = Gauge('packet_loss_rate',
 packet_duplicate_rate = Gauge('packet_duplicate_rate',
                               'Packet duplicate rate percentage',
                               ['target'])
+packet_transmit_count = Gauge('packet_transmit_count',
+                              'Number of packets transmitted',
+                              ['target'])
+packet_receive_count = Gauge('packet_receive_count',
+                              'Number of packets received',
+                              ['target'])
+packet_loss_count = Gauge('packet_loss_count',
+                              'Number of packets lost',
+                              ['target'])
+packet_duplicate_count = Gauge('packet_duplicate_count',
+                              'Number of packets duplicated',
+                              ['target'])
 
 def ping_server(target, count=5, interval=1):
     '''
@@ -29,7 +41,7 @@ def ping_server(target, count=5, interval=1):
 
     Args:
         target (str): The IP address or hostname of the target server.
-        count (int, optional): The number of ping requests to send. Defaults to 4.
+        count (int, optional): The number of ping requests to send. Defaults to 5.
         interval (int, optional): The interval between ping requests in seconds. Defaults to 1.
     '''
     transmitter = pingparsing.PingTransmitter()
@@ -77,6 +89,10 @@ def display_and_expose_results(ping_result, target):
         packet_loss_rate.labels(target=target).set(parsed_result.packet_loss_rate)
         packet_duplicate_rate.labels(target=target).set(parsed_result.packet_duplicate_rate)
         round_trip_time_mean_deviation.labels(target=target).set(parsed_result.rtt_mdev)
+        packet_transmit_count.labels(target=target).set(parsed_result.packet_transmit)
+        packet_receive_count.labels(target=target).set(parsed_result.packet_receive)
+        packet_loss_count.labels(target=target).set(parsed_result.packet_loss_count)
+        packet_duplicate_count.labels(target=target).set(parsed_result.packet_duplicate_count)
 
     except Exception as e:
         output.append(f"Error processing result: {e}")

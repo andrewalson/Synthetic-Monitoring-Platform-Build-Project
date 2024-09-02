@@ -67,10 +67,9 @@ def output(message, queue=None):
         queue (queue.Queue, optional): If provided, the message is put into this queue.
                                        If None, the message is printed to the console.
     '''
-    # Remove the first line if it's blank
-    message = re.sub(r'^\s*\n', '', message)
-    
     if queue:
+        # Remove first line if blank for frontend (all except first message re: HTTP server)
+        message = re.sub(r'^\s*\n', '', message)
         queue.put(message)
     else:
         print(message)
