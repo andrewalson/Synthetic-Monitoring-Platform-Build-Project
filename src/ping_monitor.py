@@ -71,7 +71,7 @@ def display_and_expose_results(ping_result, target):
         # Parse from JSON into Python object
         parsed_result = ping_parser.parse(ping_result.stdout)
 
-        output.append("\nPing Batch Results:")
+        output.append("\n* Ping Batch Results *")
         output.append(f"Destination: {parsed_result.destination}")
         output.append(f"Packets Transmitted: {parsed_result.packet_transmit}")
         output.append(f"Packets Received: {parsed_result.packet_receive}")
@@ -83,16 +83,27 @@ def display_and_expose_results(ping_result, target):
         output.append(f"Batch Mean Deviation: {parsed_result.rtt_mdev} ms")
 
         # Update Prometheus metrics
-        round_trip_time_average.labels(target=target).set(parsed_result.rtt_avg)
-        round_trip_time_best.labels(target=target).set(parsed_result.rtt_min)
-        round_trip_time_worst.labels(target=target).set(parsed_result.rtt_max)
-        packet_loss_rate.labels(target=target).set(parsed_result.packet_loss_rate)
-        packet_duplicate_rate.labels(target=target).set(parsed_result.packet_duplicate_rate)
-        round_trip_time_mean_deviation.labels(target=target).set(parsed_result.rtt_mdev)
-        packet_transmit_count.labels(target=target).set(parsed_result.packet_transmit)
-        packet_receive_count.labels(target=target).set(parsed_result.packet_receive)
-        packet_loss_count.labels(target=target).set(parsed_result.packet_loss_count)
-        packet_duplicate_count.labels(target=target).set(parsed_result.packet_duplicate_count)
+        if round_trip_time_average is not None:
+            round_trip_time_average.labels(target=target).set(parsed_result.rtt_avg)
+        if round_trip_time_best is not None:
+            round_trip_time_best.labels(target=target).set(parsed_result.rtt_min)
+        if round_trip_time_worst is not None:
+            round_trip_time_worst.labels(target=target).set(parsed_result.rtt_max)
+        if round_trip_time_mean_deviation is not None:
+            round_trip_time_mean_deviation.labels(target=target).set(parsed_result.rtt_mdev)
+        if packet_loss_rate is not None:
+            packet_loss_rate.labels(target=target).set(parsed_result.packet_loss_rate)
+        if packet_duplicate_rate is not None:
+            packet_duplicate_rate.labels(target=target).set(parsed_result.packet_duplicate_rate)
+        if packet_transmit_count is not None:
+            packet_transmit_count.labels(target=target).set(parsed_result.packet_transmit)
+        if packet_receive_count is not None:
+            packet_receive_count.labels(target=target).set(parsed_result.packet_receive)
+        if packet_loss_count is not None:
+            packet_loss_count.labels(target=target).set(parsed_result.packet_loss_count)
+        if packet_duplicate_count is not None:
+            packet_duplicate_count.labels(target=target).set(parsed_result.packet_duplicate_count)
+        output.append(f"* Exposed avail. metrics to Prometheus *")
 
     except Exception as e:
         output.append(f"Error processing result: {e}")
