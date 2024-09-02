@@ -1,9 +1,20 @@
+'''
+This module provides the optional Flask-based web interface.
+Run with 'python frontend.py' or 'flask --app frontend run'
+
+Global Variables:
+    app (Flask): The Flask application instance
+    output_queue (Queue): Queue for storing monitoring output messages
+    persistent_messages (list): List for storing recent messages
+    monitor_thread (Thread): Thread running the monitoring process
+'''
 from flask import Flask, render_template, request, redirect, url_for
 import os
 import sys
 import queue
+import threading
 
-# Add the parent directory to the Python path
+# Add parent directory to the Python path
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 from main import start_monitor_thread, DEFAULT_CONFIG_PATH
@@ -12,10 +23,22 @@ app = Flask(__name__)
 
 output_queue = queue.Queue()
 monitor_thread = None
+persistent_messages = []
+
+def message_processor():
+    while True:
+        message = output_queue.get()
+        persistent_messages.append(message)
+        if len(persistent_messages) > 1000:
+            persistent_messages.pop(0)
+
+# Start message processor thread
+processor_thread = threading.Thread(target=message_processor, daemon=True)
+processor_thread.start()
 
 @app.route('/')
 def index():
-    return render_template('index.html')
+    return render_template('index.html', default_config_path=DEFAULT_CONFIG_PATH)
 
 @app.route('/set_config', methods=['POST'])
 def set_config():
@@ -35,13 +58,17 @@ def set_config():
             # TO-DO: proper shutdown mechanism
             pass
         
+        # Clear previous messages
+        persistent_messages.clear()
+        
         # Start a new monitor thread
         monitor_thread = start_monitor_thread(config_path, output_queue)
         message = f"Config set and monitor started with: {config_path}"
     else:
         message = f"Error: Config file not found at {config_path}"
     
-    return render_template('index.html', message=message)
+    persistent_messages.append(message)
+    return render_template('index.html', message=message, default_config_path=DEFAULT_CONFIG_PATH)
 
 @app.route('/output')
 def output():
@@ -51,7 +78,7 @@ def output():
     messages = []
     while not output_queue.empty():
         messages.append(output_queue.get())
-    return render_template('output.html', messages=messages)
+    return render_template('output.html', messages=persistent_messages)
 
 if __name__ == '__main__':
     app.run(debug=True)
