@@ -55,7 +55,7 @@ def set_config():
     if os.path.exists(config_path):
         # Stop the existing monitor thread if it's running
         if monitor_thread:
-            # TO-DO: proper shutdown mechanism
+            # TODO: proper shutdown mechanism
             pass
         
         # Clear previous messages

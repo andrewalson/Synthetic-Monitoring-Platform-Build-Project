@@ -2,6 +2,9 @@ import yaml
 import sys
 
 
+# TODO: Handle more formats of YAML files
+# TODO: Scan YAML for globalvars/targets/probes/interval/validity to run on, guide user
+
 # Function reads & parses the YAML configuration file
 def initial_yaml_read(file_path):
     '''

@@ -80,9 +80,11 @@ def display_and_expose_results(ping_result, target):
         output.append(f"Average Round Trip Time: {parsed_result.rtt_avg} ms")
         output.append(f"Local Best Round Trip Time: {parsed_result.rtt_min} ms")
         output.append(f"Local Worst Round Trip Time: {parsed_result.rtt_max} ms")
-        output.append(f"Batch Mean Deviation: {parsed_result.rtt_mdev} ms")
+        output.append(f"Mean Deviation (Jitter): {parsed_result.rtt_mdev} ms")
 
         # Update Prometheus metrics
+        # TODO: Add noti/error handling for potential None metrics
+        # TODO: Refactor into a loop accessing parsed results object & Prom. Guages data structure
         if round_trip_time_average is not None:
             round_trip_time_average.labels(target=target).set(parsed_result.rtt_avg)
         if round_trip_time_best is not None:
